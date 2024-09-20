@@ -12,18 +12,19 @@ app.get('/todos', (req, res) => {
 
 app.post("/todos", async (req, res) => {
     console.log("Creating a Todo", req.body);
-    try{
-        const todo = await Todo.addTodo({
-            title: req.body.title,
-            dueDate: req.body.dueDate,
-            completed: false,
-        })
-        res.status(201).json(todo);
-    }catch(error){
-        console.error(error);
-        res.status(500).json("Something went wrong");
+    try {
+      const todo = await Todo.addTodo({
+        title: req.body.title,
+        dueDate: req.body.dueDate,
+        completed: false
+      });
+      res.status(201).json(todo);
+    } catch (error) {
+      console.error("Error creating todo:", error);
+      console.error("Error details:", error.parent);
+      res.status(500).json({ error: "Something went wrong", details: error.message });
     }
-});
+  });
 
 app.put("/todos/:id/markAsCompleted", async (req, res) => {
     console.log("We have to update a todo with ID:", req.params.id);

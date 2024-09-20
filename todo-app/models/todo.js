@@ -14,8 +14,8 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
 
-    static addTodo({title, dueDate}){
-      return this.create({title, dueDate});
+    static addTodo({title, dueDate, completed}){
+      return this.create({title, dueDate, completed});
     }
 
     markAsCompleted(){
