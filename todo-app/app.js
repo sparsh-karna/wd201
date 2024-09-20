@@ -57,13 +57,15 @@ app.put("/todos/:id/markAsCompleted", async function (request, response) {
 
 app.delete("/todos/:id", async function (request, response) {
   console.log("We have to delete a Todo with ID: ", request.params.id);
-  // FILL IN YOUR CODE HERE
 
-  // First, we have to query our database to delete a Todo by ID.
-  // Then, we have to respond back with true/false based on whether the Todo was deleted or not.
-  // response.send(true)
   try {
     const todo = await Todo.findByPk(request.params.id);
+    if (!todo) {
+      // If no todo is found, respond with false
+      return response.json(false);
+    }
+
+    // If the todo exists, destroy it
     await todo.destroy();
     return response.json(true);
   } catch (error) {
