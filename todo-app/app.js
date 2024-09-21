@@ -2,10 +2,21 @@ const express = require("express");
 const app = express();
 const { Todo } = require("./models");
 const bodyParser = require("body-parser");
+const path = require("path");
 app.use(bodyParser.json());
 
-app.get("/", function (request, response) {
-  response.send("Hello World");
+// eslint-disable-next-line no-undef
+app.use(express.static(path.join(__dirname, "public")));
+
+app.set("view engine", "ejs");
+
+app.get("/", async function (request, response) {
+  const allTodos = await Todo.getTodos();
+  if (request.accepts("html")) {
+    return response.render("index", { allTodos });
+  } else {
+    return response.json({ allTodos });
+  }
 });
 
 app.get("/todos", async function (_request, response) {
@@ -36,7 +47,11 @@ app.get("/todos/:id", async function (request, response) {
 
 app.post("/todos", async function (request, response) {
   try {
-    const todo = await Todo.addTodo(request.body);
+    const todo = await Todo.addTodo({
+      title: request.body.title,
+      dueDate: request.body.dueDate,
+      completed: false,
+    });
     return response.json(todo);
   } catch (error) {
     console.log(error);

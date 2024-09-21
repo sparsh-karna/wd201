@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon -e js,ejs",
+    "start:prod": "node index.js",
     "pretest": "NODE_ENV=test npx sequelize-cli db:drop && NODE_ENV=test npx sequelize-cli db:create && NODE_ENV=test npx sequelize-cli db:migrate",
     "test": "NODE_ENV=test jest --detectOpenHandles"
   },
@@ -10,6 +12,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "ejs": "^3.1.10",
     "express": "^4.21.0",
     "nodemon": "^3.1.6",
     "pg": "^8.13.0",
