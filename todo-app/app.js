@@ -11,11 +11,25 @@ app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
 
 app.get("/", async function (request, response) {
-  const allTodos = await Todo.getTodos();
-  if (request.accepts("html")) {
-    return response.render("index", { allTodos });
-  } else {
-    return response.json({ allTodos });
+  try {
+    const allTodos = await Todo.getTodos();
+    const overdueTodo = await Todo.overdueTodos();
+    const dueToday = await Todo.dueToday();
+    const dueLater = await Todo.dueLater();
+
+    if (request.accepts("html")) {
+      return response.render("index", {
+        allTodos,
+        overdueTodo,
+        dueToday,
+        dueLater,
+      });
+    } else {
+      return response.json({ allTodos, overdueTodo, dueToday, dueLater });
+    }
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
   }
 });
 
@@ -86,6 +100,33 @@ app.delete("/todos/:id", async function (request, response) {
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);
+  }
+});
+
+app.get("/todos/overdue", async function (request, response) {
+  const overdueTodo = await Todo.overdueTodos();
+  if (request.accepts("html")) {
+    return response.render("index", { overdueTodo });
+  } else {
+    return response.json({ overdueTodo });
+  }
+});
+
+app.get("/todos/dueToday", async function (request, response) {
+  const dueToday = await Todo.dueToday();
+  if (request.accepts("html")) {
+    return response.render("index", { dueToday });
+  } else {
+    return response.json({ dueToday });
+  }
+});
+
+app.get("/todos/dueLater", async function (request, response) {
+  const dueLater = await Todo.dueLater();
+  if (request.accepts("html")) {
+    return response.render("index", { dueLater });
+  } else {
+    return response.json({ dueLater });
   }
 });
 
